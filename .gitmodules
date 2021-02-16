@@ -1,0 +1,9 @@
+[submodule "Tensile"]
+	path = Tensile
+	url = git@github.com:socal-ucr/Tensile.git
+[submodule "DAGEE"]
+	path = DAGEE
+	url = git@github.com:socal-ucr/DAGEE.git
+[submodule "rocBLAS"]
+	path = rocBLAS
+	url = git@github.com:socal-ucr/rocBLAS.git
