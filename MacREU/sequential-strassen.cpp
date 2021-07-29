@@ -1,16 +1,7 @@
 #include <rocblas.h>
 #include <vector>
 #include <iostream>
-// #include <rocblas_ostream.hpp>
-// #include "../rocBLAS/clients/include/utility.hpp"
-//#include "../rocBLAS/library/include/internal/rocblas-functions.h"
-//#include "../rocBLAS/library/include/internal/rocblas-types.h"
-// #include "../rocBLAS/library/include/internal/rocblas-test.hpp"
-//#include "../rocBLAS/clients/include/rocblas_test.hpp"
-//#include "../rocBLAS/clients/include/rocblas_init.hpp"
 #include <hip/hip_runtime.h>
-
-// using namespace std;
 
 #define CHECK_HIP_ERROR(ERROR)                                                      \
     do                                                                              \
@@ -24,15 +15,6 @@
             exit(EXIT_FAILURE);                                                     \
         }                                                                           \
     } while (0)
-
-// const float negate(float *value)
-// {
-//     float negative = const_cast<float>(value);
-//     negative = -1 * negative;
-//     const float moo = negative;
-
-//     return moo;
-// }
 
 void strassen(rocblas_handle handle,    // (?) handle to the rocblas lib context queue
               rocblas_operation transA, // (?)
@@ -227,8 +209,6 @@ int main()
     //                       {3, 3, 3, 3},
     //                       {4, 4, 4, 4}};
 
-    // verify(matrix_A, matrix_B, answer);
-
     int i, j;
     int answer[2][2]; // To store result
     int matrix_A[2][2] = {{1, 2},
@@ -328,76 +308,6 @@ int main()
     hc[1] = 2;
     hc[2] = 3;
     hc[3] = 4;
-
-    // for (int i = 0; i < size_a; ++i)
-    // {
-    //     if (i != 2 && i % 4 == 0)
-    //     {
-    //         ha[i] = 0;
-    //     }
-    //     else if (i % 3 == 0)
-    //     {
-    //         ha[i] = 1;
-    //     }
-    //     else if (i % 2 == 0)
-    //     {
-    //         ha[i] = 1;
-    //     }
-    //     else
-    //     {
-    //         ha[i] = 1;
-    //     }
-    // }
-    // std::cout << "check b" << std::endl;
-    // std::cout << "size_a = " << size_a << std::endl;
-    // std::cout << "size_b = " << size_b << std::endl;
-
-    // std::cout << "size_c = " << size_c << std::endl;
-
-    // for (int i = 0; i < size_b; ++i)
-    // {
-    //     if (i != 2 && i % 4 == 0)
-    //     {
-    //         // std::cout << "check b4" << std::endl;
-    //         hb[i] = 4;
-    //     }
-    //     else if (i % 3 == 0)
-    //     {
-    //         // std::cout << "check b3" << std::endl;
-    //         ha[i] = 3;
-    //     }
-    //     else if (i % 2 == 0)
-    //     {
-    //         // std::cout << "check b2" << std::endl;
-    //         hb[i] = 2;
-    //     }
-    //     else
-    //     {
-    //         // std::cout << "check b1" << std::endl;
-    //         hb[i] = 1;
-    //     }
-    // }
-    // std::cout << "check c" << std::endl;
-    // for (int i = 0; i < size_c; ++i)
-    // {
-    //     if (i != 2 && i % 4 == 0)
-    //     {
-    //         hc[i] = 4;
-    //     }
-    //     else if (i % 3 == 0)
-    //     {
-    //         hc[i] = 3;
-    //     }
-    //     else if (i % 2 == 0)
-    //     {
-    //         hc[i] = 2;
-    //     }
-    //     else
-    //     {
-    //         hc[i] = 1;
-    //     }
-    // }
-    hc_gold = hc;
 
     // srand(1);
     // for (int i = 0; i < size_a; ++i)
