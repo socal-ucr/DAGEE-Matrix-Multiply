@@ -86,16 +86,33 @@ void strassen(rocblas_handle handle,    // (?) handle to the rocblas lib context
               rocblas_int ld_v3)
 {
 
-    const float negativeBeta = -1 * *beta;
+    std::cout << "STRASSEN-ALGORITHM: " << std::endl
+              << std::endl;
 
-    // negative = -1 * negative;
-    // negative =
+    std::cout << std::endl;
+    std::cout << "MATRIX A: " << std::endl
+              << std::endl;
+    std::cout << *A << " " << *(A + 1) << std::endl;
+    std::cout << *(A + n) << " " << *(A + n + 1) << std::endl
+              << std::endl;
+
+    std::cout << std::endl;
+    std::cout << "MATRIX B: " << std::endl
+              << std::endl;
+    std::cout << *B << " " << *(B + 1) << std::endl;
+    std::cout << *(B + n) << " " << *(B + n + 1) << std::endl
+              << std::endl;
+
+    const float negativeBeta = -1 * *beta;
 
     // S_1 = A_21 + A_22
     rocblas_sgeam(handle, rocblas_operation_none, rocblas_operation_none, m, n, alpha, (A + n), lda, beta, (A + n + 1), lda, S_1, ld_s1);
+    std::cout << "S_1: " << *(A + n) << " + " << *(A + n + 1) << " = " << *S_1 << std::endl;
+    std::cout << "ld_s1 = " << ld_s1 << std::endl;
 
     // S_2 = S_1 - A_11
-    rocblas_sgeam(handle, rocblas_operation_none, rocblas_operation_none, m, n, alpha, S_1, lda, &negativeBeta, A, lda, S_2, ld_s2);
+    rocblas_sgeam(handle, rocblas_operation_none, rocblas_operation_none, m, n, alpha, S_1, ld_s1, &negativeBeta, A, lda, S_2, ld_s2);
+    std::cout << "S_2: " << *S_1 << " - " << *A << " = " << *S_2 << std::endl;
 
     // S_3 = A_11 - A_21
     rocblas_sgeam(handle, rocblas_operation_none, rocblas_operation_none, m, n, alpha, A, lda, &negativeBeta, (A + n), lda, S_3, ld_s3);
@@ -158,24 +175,89 @@ void strassen(rocblas_handle handle,    // (?) handle to the rocblas lib context
     rocblas_sgeam(handle, rocblas_operation_none, rocblas_operation_none, m, n, alpha, V_1, ld_v1, beta, V_3, ld_v3, (C + 1), ldc);
 
     // C_21 = V_2 - M_7
-    rocblas_sgeam(handle, rocblas_operation_none, rocblas_operation_none, m, n, alpha, V_2, ld_v2, beta, M_7, ld_m7, (C + n), ldc);
+    rocblas_sgeam(handle, rocblas_operation_none, rocblas_operation_none, m, n, alpha, V_2, ld_v2, &negativeBeta, M_7, ld_m7, (C + n), ldc);
 
     // C_22 = V_2 + M_5
     rocblas_sgeam(handle, rocblas_operation_none, rocblas_operation_none, m, n, alpha, V_2, ld_v2, beta, M_5, ld_m5, (C + n + 1), ldc);
+
+    // ---------------------------------------------- OUTPUT RESULT
+    std::cout << std::endl;
+    std::cout << "STRASSEN-ALGORITHM RESULTS: " << std::endl
+              << std::endl;
+    std::cout << *C << " " << *(C + 1) << std::endl;
+    std::cout << *(C + n) << " " << *(C + n + 1) << std::endl
+              << std::endl;
 }
 
-#define DIM1 1023
-#define DIM2 1024
-#define DIM3 1025
+#define DIM1 2
+#define DIM2 2
+#define DIM3 2
+
+int N = 2;
+
+void verify(int matrix_A[2][2],
+            int matrix_B[2][2],
+            int ans[2][2])
+{
+    int i, j, k;
+    for (i = 0; i < N; i++)
+    {
+        for (j = 0; j < N; j++)
+        {
+            ans[i][j] = 0;
+            for (k = 0; k < N; k++)
+            {
+                ans[i][j] += matrix_A[i][k] * matrix_B[k][j];
+            }
+        }
+    }
+}
 
 int main()
 {
+    // int i, j;
+    // int answer[4][4]; // To store result
+    // int matrix_A[4][4] = {{1, 1, 1, 1},
+    //                       {2, 2, 2, 2},
+    //                       {3, 3, 3, 3},
+    //                       {4, 4, 4, 4}};
+
+    // int matrix_B[4][4] = {{1, 1, 1, 1},
+    //                       {2, 2, 2, 2},
+    //                       {3, 3, 3, 3},
+    //                       {4, 4, 4, 4}};
+
+    // verify(matrix_A, matrix_B, answer);
+
+    int i, j;
+    int answer[2][2]; // To store result
+    int matrix_A[2][2] = {{1, 2},
+                          {3, 4}};
+
+    int matrix_B[2][2] = {{1, 2},
+                          {3, 4}};
+
+    verify(matrix_A, matrix_B, answer);
+    // std::cout << std::endl
+    //           << std::endl;
+    // std::cout << "RESULTS MATRIX: \n \n";
+    // for (i = 0; i < 2; i++)
+    // {
+    //     for (j = 0; j < 2; j++)
+    //     {
+    //         std::cout << answer[i][j] << " ";
+    //     }
+    //     std::cout << "\n";
+    // }
+
+    std::cout << std::endl;
+
     rocblas_operation transa = rocblas_operation_none, transb = rocblas_operation_transpose;
-    float alpha = 1.1, beta = 0.9;
+    float alpha = 1, beta = 1;
 
     rocblas_int m = DIM1, n = DIM2, k = DIM3;
     rocblas_int lda, ldb, ldc, size_a, size_b, size_c;
-    rocblas_int ld_s1, ld_s2, ld_s3, ld_s4, ld_s5, ld_s6, ld_s7, ld_s8, ld_m1, ld_m2, ld_m3, ld_m4, ld_m5, ld_m6, ld_m7, ld_v1, ld_v2, ld_v3;
+    rocblas_int ld_s1 = DIM1, ld_s2 = DIM1, ld_s3 = DIM1, ld_s4 = DIM1, ld_s5 = DIM1, ld_s6 = DIM1, ld_s7 = DIM1, ld_s8 = DIM1, ld_m1 = DIM1, ld_m2 = DIM1, ld_m3 = DIM1, ld_m4 = DIM1, ld_m5 = DIM1, ld_m6 = DIM1, ld_m7 = DIM1, ld_v1 = DIM1, ld_v2 = DIM1, ld_v3 = DIM1;
     int a_stride_1, a_stride_2, b_stride_1, b_stride_2;
 
     std::cout << "sgemm example" << std::endl;
@@ -215,6 +297,12 @@ int main()
     ldc = m;
     size_c = n * ldc;
 
+    std::cout << "M value: " << m << std::endl;
+    std::cout << "b_stride_1 value: " << b_stride_1 << std::endl
+              << std::endl;
+
+    std::cout << "CHECK 1" << std::endl;
+
     // Naming: da is in GPU (device) memory. ha is in CPU (host) memory
     std::vector<float> ha(size_a);
     std::vector<float> hb(size_b);
@@ -222,26 +310,119 @@ int main()
     std::vector<float> hc_gold(size_c);
 
     // initial data on host
-    srand(1);
-    for (int i = 0; i < size_a; ++i)
-    {
-        ha[i] = rand() % 17;
-    }
-    for (int i = 0; i < size_b; ++i)
-    {
-        hb[i] = rand() % 17;
-    }
-    for (int i = 0; i < size_c; ++i)
-    {
-        hc[i] = rand() % 17;
-    }
+
+    std::vector<int> numbers = {1, 2, 3, 4};
+    std::cout << "check a" << std::endl;
+
+    ha[0] = 1;
+    ha[1] = 2;
+    ha[2] = 3;
+    ha[3] = 4;
+
+    hb[0] = 1;
+    hb[1] = 2;
+    hb[2] = 3;
+    hb[3] = 4;
+
+    hc[0] = 1;
+    hc[1] = 2;
+    hc[2] = 3;
+    hc[3] = 4;
+
+    // for (int i = 0; i < size_a; ++i)
+    // {
+    //     if (i != 2 && i % 4 == 0)
+    //     {
+    //         ha[i] = 0;
+    //     }
+    //     else if (i % 3 == 0)
+    //     {
+    //         ha[i] = 1;
+    //     }
+    //     else if (i % 2 == 0)
+    //     {
+    //         ha[i] = 1;
+    //     }
+    //     else
+    //     {
+    //         ha[i] = 1;
+    //     }
+    // }
+    // std::cout << "check b" << std::endl;
+    // std::cout << "size_a = " << size_a << std::endl;
+    // std::cout << "size_b = " << size_b << std::endl;
+
+    // std::cout << "size_c = " << size_c << std::endl;
+
+    // for (int i = 0; i < size_b; ++i)
+    // {
+    //     if (i != 2 && i % 4 == 0)
+    //     {
+    //         // std::cout << "check b4" << std::endl;
+    //         hb[i] = 4;
+    //     }
+    //     else if (i % 3 == 0)
+    //     {
+    //         // std::cout << "check b3" << std::endl;
+    //         ha[i] = 3;
+    //     }
+    //     else if (i % 2 == 0)
+    //     {
+    //         // std::cout << "check b2" << std::endl;
+    //         hb[i] = 2;
+    //     }
+    //     else
+    //     {
+    //         // std::cout << "check b1" << std::endl;
+    //         hb[i] = 1;
+    //     }
+    // }
+    // std::cout << "check c" << std::endl;
+    // for (int i = 0; i < size_c; ++i)
+    // {
+    //     if (i != 2 && i % 4 == 0)
+    //     {
+    //         hc[i] = 4;
+    //     }
+    //     else if (i % 3 == 0)
+    //     {
+    //         hc[i] = 3;
+    //     }
+    //     else if (i % 2 == 0)
+    //     {
+    //         hc[i] = 2;
+    //     }
+    //     else
+    //     {
+    //         hc[i] = 1;
+    //     }
+    // }
     hc_gold = hc;
+
+    // srand(1);
+    // for (int i = 0; i < size_a; ++i)
+    // {
+    //     ha[i] = rand() % 17;
+    // }
+    // for (int i = 0; i < size_b; ++i)
+    // {
+    //     hb[i] = rand() % 17;
+    // }
+    // for (int i = 0; i < size_c; ++i)
+    // {
+    //     hc[i] = rand() % 17;
+    // }
+    // hc_gold = hc;
+
+    std::cout << "CHECK 2" << std::endl;
 
     // allocate memory on device
     float *da, *db, *dc;
-    CHECK_HIP_ERROR(hipMalloc(&da, size_a * sizeof(float)));
-    CHECK_HIP_ERROR(hipMalloc(&db, size_b * sizeof(float)));
-    CHECK_HIP_ERROR(hipMalloc(&dc, size_c * sizeof(float)));
+    CHECK_HIP_ERROR(hipHostMalloc(&da, size_a * sizeof(float)));
+    CHECK_HIP_ERROR(hipHostMalloc(&db, size_b * sizeof(float)));
+    CHECK_HIP_ERROR(hipHostMalloc(&dc, size_c * sizeof(float)));
+
+    std::cout << "CHECK 3" << std::endl;
 
     // allocating temporary matrices on device
     float *S_1, *S_2, *S_3, *S_4, *S_5, *S_6, *S_7, *S_8;
@@ -275,10 +456,14 @@ int main()
     // CHECK_HIP_ERROR(hipMalloc(&C_21, size_c * sizeof(float)));
     // CHECK_HIP_ERROR(hipMalloc(&C_22, size_a * sizeof(float)));
 
+    std::cout << "CHECK 4" << std::endl;
+
     // copy matrices from host to device
     CHECK_HIP_ERROR(hipMemcpy(da, ha.data(), sizeof(float) * size_a, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(db, hb.data(), sizeof(float) * size_b, hipMemcpyHostToDevice));
     CHECK_HIP_ERROR(hipMemcpy(dc, hc.data(), sizeof(float) * size_c, hipMemcpyHostToDevice));
+
+    std::cout << "CHECK 5" << std::endl;
 
     rocblas_handle handle;
     // CHECK_ROCBLAS_ERROR(rocblas_create_handle(&handle));
@@ -294,6 +479,8 @@ int main()
 
     float max_relative_error = std::numeric_limits<float>::min();
 
+    std::cout << "CHECK 6" << std::endl;
+
     /* 
     ---------------------------------------------------------------------------------------------
     
@@ -301,6 +488,20 @@ int main()
     
     ---------------------------------------------------------------------------------------------
     */
+
+    std::cout << std::endl
+              << std::endl;
+    std::cout << "CORRECT MATRIX: \n \n";
+
+    for (i = 0; i < 2; i++)
+    {
+        for (j = 0; j < 2; j++)
+        {
+            std::cout << answer[i][j] << " ";
+        }
+        std::cout << "\n";
+    }
+    std::cout << std::endl;
 
     strassen(handle, // (?) handle to the rocblas lib context queue
              transa, // (?)
@@ -353,24 +554,7 @@ int main()
              V_3,
              ld_v3);
 
+    std::cout << "CHECK 7" << std::endl;
+
     return 0;
 }
-
-/*
-
-rocblas_status rocblas_sgeam(       rocblas_handle    handle,  // (?) handle to the rocblas lib context queue
-                                    rocblas_operation transA,  // (?)
-                                    rocblas_operation transB,  // (?)
-                                    rocblas_int       m,       // matrix dimension m
-                                    rocblas_int       n,       // matrix dimension n 
-                                    const float*      alpha,   // (?) scalar value
-                                    const float*      A,       // (?) device pointer to the first matrix A_0 on the GPU 
-                                    rocblas_int       lda,     // (?) specifies the leading dimension of A. Each A_i is of dimension ( lda, n ).
-                                    const float*      beta,    // scalar value 
-                                    const float*      B,       // device pointer to the first matrix B_0 on the GPU 
-                                    rocblas_int       ldb,     // specifies the leading dimension of B. Each B_i is of dimension ( ldb, n ).
-                                    float*            C,       // device pointer to the first matrix C_0 on the GPU. Each C_i is of dimension ( ldc, n ).
-                                    rocblas_int       ldc);    // specifies the increment between values of C 
-
-
-*/
