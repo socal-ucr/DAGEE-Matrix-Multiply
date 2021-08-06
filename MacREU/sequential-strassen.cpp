@@ -87,10 +87,19 @@ void strassen(rocblas_handle handle,    // (?) handle to the rocblas lib context
 
     const float negativeBeta = -1 * *beta;
 
+    std::cout << "S_1 BEFORE: " << *S_1 << std::endl;
+
     // S_1 = A_21 + A_22
     rocblas_sgeam(handle, rocblas_operation_none, rocblas_operation_none, m, n, alpha, (A + n), lda, beta, (A + n + 1), lda, S_1, ld_s1);
-    std::cout << "S_1: " << *(A + n) << " + " << *(A + n + 1) << " = " << *S_1 << std::endl;
-    std::cout << "ld_s1 = " << ld_s1 << std::endl;
+
+    std::cout << "S_1 AFTER: " << *(A + n) << " + " << *(A + n + 1) << " = " << *S_1 << std::endl;
+    std::cout << "m = " << m << std::endl;
+    std::cout << "n = " << n << std::endl;
+    std::cout << "alpha = " << *alpha << std::endl;
+    std::cout << "lda = " << lda << std::endl;
+    std::cout << "beta = " << *beta << std::endl;
+    std::cout << "ld_s1 = " << ld_s1 << std::endl
+              << std::endl;
 
     // S_2 = S_1 - A_11
     rocblas_sgeam(handle, rocblas_operation_none, rocblas_operation_none, m, n, alpha, S_1, ld_s1, &negativeBeta, A, lda, S_2, ld_s2);
