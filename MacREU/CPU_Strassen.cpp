@@ -29,33 +29,27 @@ void print_matrix(std::vector<T> matrix, std::string matrix_name = "Unknown Matr
 template <typename T>
 void add(std::vector<T> A, std::vector<T> B, std::vector<T> &C)
 {
-    for (int i = 0; i < A.size(); ++i)
+    // for (int i = 0; i < A.size(); ++i)
+    // {
+    for (int j = 0; j < A.size(); ++j)
     {
-        // std::cout << "CHECK ADD 1" << std::endl;
-        for (int j = 0; j < A.size(); ++j)
-        {
-            // std::cout << "CHECK ADD 2" << std::endl;
-            C.push_back(A.at(i + j) + B.at(i + j));
-            // std::cout << "i: " << i << " " << std::endl;
-            // std::cout << "j: " << j << " " << std::endl;
-            // std::cout << "boom da boom: " << i + j << " " << std::endl;
-        }
-        print_matrix(C, "C Matrix");
+        C.push_back(A.at(j) + B.at(j));
+        // std::cout << "j: " << j << std::endl;
     }
-    // print_matrix(C, "C Matrix");
+    print_matrix(C, "C Matrix");
+    // }
 }
 
 template <typename T>
 void sub(std::vector<T> A, std::vector<T> B, std::vector<T> &C)
 {
 
-    for (int i = 0; i < A.size(); i++)
+    for (int j = 0; j < A.size(); ++j)
     {
-        for (int j = 0; j < A.size(); j++)
-        {
-            C.push_back(A.at(i + j) - B.at(i + j));
-        }
+        C.push_back(A.at(j) - B.at(j));
+        // std::cout << "j: " << j << std::endl;
     }
+    print_matrix(C, "C Matrix");
 }
 
 template <typename T>
@@ -155,22 +149,26 @@ void strassen_winograd(std::vector<T> A, std::vector<T> B, std::vector<double> &
         // print_matrix(B_22, "B_22");
 
         // std::cout << "OUT OF BOUNDS CHECK 1" << std::endl;
-
+        std::cout << "S_1" << std::endl;
         // S_1 = A_21 + A_22
         std::vector<double> S_1;
         add(A_21, A_22, S_1);
 
+        std::cout << "S_2" << std::endl;
         // S_2 = S_1 - A_11
         std::vector<double> S_2;
         sub(S_1, A_11, S_2);
 
+        std::cout << "S_3" << std::endl;
         // S_3 = A_11 - A_21
         std::vector<double> S_3;
         sub(A_11, A_21, S_3);
 
+        std::cout << "S_4" << std::endl;
         // S_4 = A_12 - S_2
         std::vector<double> S_4;
         sub(A_12, S_2, S_4);
+        std::cout << "S_5" << std::endl;
 
         // S_5 = B_12 - B_11
         std::vector<double> S_5;
