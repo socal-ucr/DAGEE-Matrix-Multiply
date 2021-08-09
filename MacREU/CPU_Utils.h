@@ -5,7 +5,7 @@
 
 // NOTE: Matrices have to be square.
 template <typename T>
-void print_matrix(std::vector<T> &matrix, std::string matrix_name = "Unknown Matrix")
+void print_matrix(const std::vector<T> &matrix, std::string matrix_name = "Unknown Matrix")
 {
   std::cout << std::endl
             << "Printing Matrix: " << matrix_name << std::endl;
@@ -23,20 +23,19 @@ void print_matrix(std::vector<T> &matrix, std::string matrix_name = "Unknown Mat
 }
 
 template <typename T>
-void add(std::vector<T> A, std::vector<T> B, std::vector<T> &C)
+std::vector<T> add(const std::vector<T> &A, const std::vector<T> &B)
 {
+  std::vector<T> C;
   for (T j = 0; j < A.size(); ++j)
   {
     C.push_back(A.at(j) + B.at(j));
   }
-  print_matrix(C, "C Matrix");
+  return C;
 }
 
 template <typename T>
-void matrixMul(std::vector<T> &A, std::vector<T> &B, std::vector<T> &C, size_t n)
+void matrixMul(const std::vector<T> &A, const std::vector<T> &B, std::vector<T> &C, size_t n)
 {
-  // auto n = static_cast<size_t>(std::sqrt(n));
-
   for (auto i = 0; i < n; i++)
   {
     for (auto j = 0; j < n; j++)
@@ -50,12 +49,12 @@ void matrixMul(std::vector<T> &A, std::vector<T> &B, std::vector<T> &C, size_t n
 }
 
 template <typename T>
-void sub(std::vector<T> A, std::vector<T> B, std::vector<T> &C)
+std::vector<T> sub(const std::vector<T> &A, const std::vector<T> &B)
 {
-
-  for (int j = 0; j < A.size(); ++j)
+  std::vector<T> C;
+  for (T j = 0; j < A.size(); ++j)
   {
     C.push_back(A.at(j) - B.at(j));
   }
-  print_matrix(C, "C Matrix");
+  return C;
 }
