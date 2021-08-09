@@ -2,6 +2,7 @@
 #include <vector>
 #include <cmath>
 #include <string>
+#include "Utils.h"
 
 // Class Matrix matrix
 // matrix.submatrices(size_t sz)
@@ -10,45 +11,9 @@
 // }
 
 // NOTE: Matrices have to be square.
-template <typename T>
-void print_matrix(std::vector<T> matrix, std::string matrix_name = "Unknown Matrix")
-{
-    std::cout << std::endl
-              << "Printing Matrix: " << matrix_name << std::endl;
-    for (T i = 0; i < matrix.size(); i++)
-    {
-        if (fmod(i, sqrt(matrix.size())) == 0)
-        {
-            std::cout << std::endl;
-        }
-        std::cout << matrix.at(i) << "\t";
-    }
-    std::cout << std::endl;
-}
 
 template <typename T>
-void add(std::vector<T> A, std::vector<T> B, std::vector<T> &C)
-{
-    for (int j = 0; j < A.size(); ++j)
-    {
-        C.push_back(A.at(j) + B.at(j));
-    }
-    print_matrix(C, "C Matrix");
-}
-
-template <typename T>
-void sub(std::vector<T> A, std::vector<T> B, std::vector<T> &C)
-{
-
-    for (int j = 0; j < A.size(); ++j)
-    {
-        C.push_back(A.at(j) - B.at(j));
-    }
-    print_matrix(C, "C Matrix");
-}
-
-template <typename T>
-void strassen_winograd(std::vector<T> A, std::vector<T> B, std::vector<double> &C, int dim)
+void strassenMul(std::vector<T> A, std::vector<T> B, std::vector<double> &C, int dim)
 {
 
     if (dim == 1)
@@ -233,111 +198,189 @@ void strassen_winograd(std::vector<T> A, std::vector<T> B, std::vector<double> &
         //           << "OUT OF BOUNDS CHECK 1" << std::endl;
 
         // M_1 = S_2 x S_6
-        std::vector<double> M_1;
+        std::vector<double> M_1(m * m);
         std::cout << "M_1 size: " << M_1.size() << std::endl;
         std::cout << "M size: " << m << std::endl;
-
-        print_matrix(S_2, "S_2");
-        print_matrix(S_6, "S_6");
-
-        strassen_winograd(S_2, S_6, M_1, m);
-
-        // std::cout << "OUT OF BOUNDS CHECK 2" << std::endl;
-
-        // // M_2 = A_11 x B_11
-
-        // std::cout << "OUT OF BOUNDS CHECK 3" << std::endl;
 
         // print_matrix(S_2, "S_2");
         // print_matrix(S_6, "S_6");
 
-        // std::vector<double> M_2;
-        // strassen_winograd(A_11, B_11, M_2, m);
+        matrixMul(S_2, S_6, M_1, m);
 
-        // // M_3 = A_12 x B_21
-        // std::cout << "OUT OF BOUNDS CHECK 4" << std::endl;
-        // std::vector<double> M_3;
-        // strassen_winograd(A_12, B_21, M_3, m);
+        // std::cout << "OUT OF BOUNDS CHECK 2" << std::endl;
 
-        // // M_4 = S_3 x S_7
-        // std::cout << "OUT OF BOUNDS CHECK 5" << std::endl;
-        // std::vector<double> M_4;
-        // strassen_winograd(S_3, S_7, M_4, m);
+        // M_2 = A_11 x B_11
+        std::cout << "OUT OF BOUNDS CHECK 3" << std::endl;
+        std::vector<double> M_2(m * m);
+        matrixMul(A_11, B_11, M_2, m);
+
+        // M_3 = A_12 x B_21
+        std::cout << "OUT OF BOUNDS CHECK 4" << std::endl;
+        std::vector<double> M_3(m * m);
+        matrixMul(A_12, B_21, M_3, m);
+
+        // M_4 = S_3 x S_7
+        std::cout << "OUT OF BOUNDS CHECK 5" << std::endl;
+        std::vector<double> M_4(m * m);
+        matrixMul(S_3, S_7, M_4, m);
 
         // // M_5 = S_1 x S_5
-        // std::cout << "OUT OF BOUNDS CHECK 6" << std::endl;
-        // std::vector<double> M_5;
-        // strassen_winograd(S_1, S_5, M_5, m);
+        std::cout << "OUT OF BOUNDS CHECK 6" << std::endl;
+        std::vector<double> M_5(m * m);
+        matrixMul(S_1, S_5, M_5, m);
 
         // // M_6 = S_4 x B_22
-        // std::cout << "OUT OF BOUNDS CHECK 7" << std::endl;
-        // std::vector<double> M_6;
-        // strassen_winograd(S_4, B_22, M_6, m);
+        std::cout << "OUT OF BOUNDS CHECK 7" << std::endl;
+        std::vector<double> M_6(m * m);
+        matrixMul(S_4, B_22, M_6, m);
 
-        // // M_7 = A_22 x S_8
-        // std::cout << "OUT OF BOUNDS CHECK 8" << std::endl;
-        // std::vector<double> M_7;
-        // strassen_winograd(A_22, S_8, M_7, m);
-
-        // // ----------------------------------------------
-
-        // // V_1 = M_1 + M_2
-        // std::cout << "OUT OF BOUNDS CHECK 9" << std::endl;
-        // std::vector<double> V_1;
-        // add(M_1, M_2, V_1);
-        // print_matrix(M_1, "M_1");
-
-        // // V_2 = V_1 + M_4
-        // std::cout << "OUT OF BOUNDS CHECK 10" << std::endl;
-        // std::vector<double> V_2;
-        // add(V_1, M_4, V_2);
-
-        // // V_3 = M_5 + M_6
-        // std::cout << "OUT OF BOUNDS CHECK 11" << std::endl;
-        // std::vector<double> V_3;
-        // add(M_5, M_6, V_3);
+        // M_7 = A_22 x S_8
+        std::cout << "OUT OF BOUNDS CHECK 8" << std::endl;
+        std::vector<double> M_7(m * m);
+        matrixMul(A_22, S_8, M_7, m);
 
         // // ----------------------------------------------
 
-        // // C_11 = M_2 + M_3
-        // std::cout << "OUT OF BOUNDS CHECK 12" << std::endl;
-        // std::vector<double> C_11;
-        // add(M_2, M_3, C_11);
+        // V_1 = M_1 + M_2
+        std::cout << "OUT OF BOUNDS CHECK 9" << std::endl;
+        std::vector<double> V_1;
+        add(M_1, M_2, V_1);
+        print_matrix(V_1, "V_1");
 
-        // // C_12 = V_1 + V_3
-        // std::cout << "OUT OF BOUNDS CHECK 13" << std::endl;
-        // std::vector<double> C_12;
-        // add(V_1, V_3, C_12);
+        // V_2 = V_1 + M_4
+        std::cout << "OUT OF BOUNDS CHECK 10" << std::endl;
+        std::vector<double> V_2;
+        add(V_1, M_4, V_2);
 
-        // // C_21 = V_2 - M_7
-        // std::cout << "OUT OF BOUNDS CHECK 14" << std::endl;
-        // std::vector<double> C_21;
-        // sub(V_2, M_7, C_21);
+        // V_3 = M_5 + M_6
+        std::cout << "OUT OF BOUNDS CHECK 11" << std::endl;
+        std::vector<double> V_3;
+        add(M_5, M_6, V_3);
 
-        // // C_22 = V_2 + M_5
-        // std::cout << "OUT OF BOUNDS CHECK 15" << std::endl;
-        // std::vector<double> C_22;
-        // add(V_2, M_5, C_22);
+        // ----------------------------------------------
+
+        // C_11 = M_2 + M_3
+        std::cout << "OUT OF BOUNDS CHECK 12" << std::endl;
+        std::vector<double> C_11;
+        add(M_2, M_3, C_11);
+
+        // C_12 = V_1 + V_3
+        std::cout << "OUT OF BOUNDS CHECK 13" << std::endl;
+        std::vector<double> C_12;
+        add(V_1, V_3, C_12);
+
+        // C_21 = V_2 - M_7
+        std::cout << "OUT OF BOUNDS CHECK 14" << std::endl;
+        std::vector<double> C_21;
+        sub(V_2, M_7, C_21);
+
+        // C_22 = V_2 + M_5
+        std::cout << "OUT OF BOUNDS CHECK 15" << std::endl;
+        std::vector<double> C_22;
+        add(V_2, M_5, C_22);
+
+        std::vector<T> temp;
+
+        print_matrix(C_11, "C_11");
+
+        // ---------------------------- POPULATING C-MATRIX
+
+        for (int i = 0; i < m; ++i)
+        {
+            temp.push_back(C_11.at(i));
+        }
+        for (int i = 0; i < m; ++i)
+        {
+            temp.push_back(C_12.at(i));
+        }
+        for (int i = 0; i < m; ++i)
+        {
+            temp.push_back(C_11.at(i + m));
+        }
+        for (int i = 0; i < m; ++i)
+        {
+            temp.push_back(C_12.at(i + m));
+        }
+        for (int i = 0; i < m; ++i)
+        {
+            temp.push_back(C_11.at(i + dim));
+        }
+        for (int i = 0; i < m; ++i)
+        {
+            temp.push_back(C_12.at(i + dim));
+        }
+        for (int i = 0; i < m; ++i)
+        {
+            temp.push_back(C_11.at(i + dim + m));
+        }
+        for (int i = 0; i < m; ++i)
+        {
+            temp.push_back(C_12.at(i + dim + m));
+        }
+        for (int i = 0; i < m; ++i)
+        {
+            temp.push_back(C_21.at(i));
+        }
+        for (int i = 0; i < m; ++i)
+        {
+            temp.push_back(C_22.at(i));
+        }
+        for (int i = 0; i < m; ++i)
+        {
+            temp.push_back(C_21.at(i + m));
+        }
+        for (int i = 0; i < m; ++i)
+        {
+            temp.push_back(C_22.at(i + m));
+        }
+        for (int i = 0; i < m; ++i)
+        {
+            temp.push_back(C_21.at(i + dim));
+        }
+        for (int i = 0; i < m; ++i)
+        {
+            temp.push_back(C_22.at(i + dim));
+        }
+        for (int i = 0; i < m; ++i)
+        {
+            temp.push_back(C_21.at(i + dim + m));
+        }
+        for (int i = 0; i < m; ++i)
+        {
+            temp.push_back(C_22.at(i + dim + m));
+        }
+
+        for (int i = 0; i < C.size(); ++i)
+        {
+            C.at(i) = temp.at(i);
+        }
     }
 }
 
-int main()
+int main(int argc, char **argv)
 {
-    int n = 4;
-    std::vector<double> A;
-    std::vector<double> B;
-    std::vector<double> C;
+    int n = (argc < 2) ? 8 : atoi(argv[1]);
+
+    std::vector<double> A(n * n, 1);
+    std::vector<double> B(n * n, 1);
+    std::vector<double> C(n * n);
+    std::vector<double> C_verify(n * n, 0);
 
     for (double i = 0; i < n * n; ++i)
     {
-        A.push_back(i);
-        B.push_back(i);
+        A[i] = i;
+        B[i] = i;
     }
 
     print_matrix(A, "matrix A");
     print_matrix(B, "matrix B");
+    print_matrix(C, "matrix_C");
 
-    strassen_winograd(A, B, C, n);
+    strassenMul(A, B, C, n);
+    print_matrix(C, "matrix_C");
+
+    matrixMul(A, B, C_verify, n);
+    print_matrix(C_verify, "matrix_C_verify");
 
     return 0;
 }
