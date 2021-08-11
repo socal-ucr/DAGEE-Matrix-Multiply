@@ -4,7 +4,7 @@
 #include <string>
 #include <cstdlib>
 
-#include "CPU_Utils.h"
+#include "CPU_Utils.hpp"
 
 #define DEBUG 0
 
@@ -90,6 +90,7 @@ void strassenMul(std::vector<T> A, std::vector<T> B, std::vector<double> &C, int
                 }
             }
         }
+
         // S_1 = A_21 + A_22
         std::vector<double> S_1 = add(A_21, A_22);
 
