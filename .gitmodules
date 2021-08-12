@@ -1,9 +1,12 @@
 [submodule "Tensile"]
 	path = Tensile
-	url = git@github.com:socal-ucr/Tensile.git
+	url = https://github.com/socal-ucr/Tensile
 [submodule "DAGEE"]
 	path = DAGEE
-	url = git@github.com:socal-ucr/DAGEE.git
+	url = https://github.com/socal-ucr/DAGEE
 [submodule "rocBLAS"]
 	path = rocBLAS
-	url = git@github.com:socal-ucr/rocBLAS.git
+	url = https://github.com/socal-ucr/rocBLAS
+[submodule "atmi"]
+	path = atmi
+	url = https://github.com/socal-ucr/atmi
