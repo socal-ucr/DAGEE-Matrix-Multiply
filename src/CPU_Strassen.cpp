@@ -1,12 +1,12 @@
-#include <iostream>
-#include <vector>
+#include <chrono>
 #include <cmath>
-#include <string>
 #include <cstdlib>
+#include <iostream>
+#include <string>
+#include <vector>
 
-#include "CPU_Utils.hpp"
-
-#define DEBUG 0
+#include <CPU_Utils.hpp>
+#include <verify.hpp>
 
 template <typename T>
 void strassenMul(std::vector<T> A, std::vector<T> B, std::vector<double> &C, int dim)
@@ -219,7 +219,13 @@ int main(int argc, char **argv)
         B[i] = val;
     }
 
+#if TIME == 1
+    auto start = std::chrono::high_resolution_clock::now();
+#endif
     strassenMul(A, B, C, n);
+#if TIME == 1
+    auto stop = std::chrono::high_resolution_clock::now();
+#endif
 
 #if DEBUG == 1
     print_matrix(C, "matrix_C");
@@ -227,6 +233,11 @@ int main(int argc, char **argv)
     verify_matrix_multiply(&A[0], &B[0], &C[0], n);
 
     std::cout << "Success" << std::endl;
+
+#if TIME == 1
+    auto duration_s = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+    std::cout << "Runtime(microseconds): " << duration_s.count() << std::endl;
+#endif
 
     return 0;
 }

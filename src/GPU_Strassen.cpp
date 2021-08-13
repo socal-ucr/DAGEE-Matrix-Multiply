@@ -1,12 +1,12 @@
-#include <iostream>
-#include <vector>
+#include <chrono>
 #include <cmath>
-#include <string>
 #include <cstdlib>
+#include <iostream>
+#include <string>
+#include <vector>
 
-#include "GPU_Utils.hpp"
-
-#define DEBUG 0
+#include <GPU_Utils.hpp>
+#include <verify.hpp>
 
 template <typename T>
 void gpu_strassen_mul(T A, T B, T &C, int dim)
@@ -238,7 +238,13 @@ int main(int argc, char **argv)
         B[i] = val;
     }
 
+#if TIME == 1
+    auto start = std::chrono::high_resolution_clock::now();
+#endif
     gpu_strassen_mul(A, B, C, n);
+#if TIME == 1
+    auto stop = std::chrono::high_resolution_clock::now();
+#endif
 
 #if DEBUG == 1
     print_matrix(C, n * n, "matrix_C");
@@ -246,6 +252,11 @@ int main(int argc, char **argv)
     verify_matrix_multiply(A, B, C, n);
 
     std::cout << "Success" << std::endl;
+
+#if TIME == 1
+    auto duration_s = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+    std::cout << "Runtime(microseconds)" << duration_s.count() << std::endl;
+#endif
 
     return 0;
 }

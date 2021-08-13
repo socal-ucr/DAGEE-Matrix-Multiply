@@ -10,8 +10,6 @@
 #include <hip/hip_runtime.h>
 #include <rocblas.h>
 
-#include "common.hpp"
-
 #ifndef CHECK_HIP_ERROR
 #define CHECK_HIP_ERROR(ERROR)                                                      \
     do                                                                              \

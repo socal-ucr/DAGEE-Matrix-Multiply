@@ -6,8 +6,6 @@
 #include <string>
 #include <vector>
 
-#include "common.hpp"
-
 // NOTE: Matrices have to be square.
 template <typename T>
 void print_matrix(const std::vector<T> &matrix, std::string matrix_name = "Unknown Matrix")
