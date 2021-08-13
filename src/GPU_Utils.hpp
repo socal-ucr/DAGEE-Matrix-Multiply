@@ -1,8 +1,16 @@
+#ifndef GPU_UTILS_HPP
+#define GPU_UTILS_HPP
+
 #include <cstdlib>
+#include <cmath>
 #include <iostream>
+#include <string>
 #include <vector>
-#include <rocblas.h>
+
 #include <hip/hip_runtime.h>
+#include <rocblas.h>
+
+#include "common.hpp"
 
 #ifndef CHECK_HIP_ERROR
 #define CHECK_HIP_ERROR(ERROR)                                                      \
@@ -42,7 +50,6 @@ const float alpha = 1;
 const float beta = 1;
 const float negativeBeta = -1 * alpha;
 
-// float *da = hip_host_malloc<float>(n)
 template <typename T>
 T *hip_host_malloc(size_t n)
 {
@@ -90,7 +97,7 @@ void print_matrix(T *matrix, int length, std::string matrix_name = "Unknown Matr
     std::cout << std::endl;
 }
 
-// ----------------------------------------------------------- OPERATIONS
+// ----------------------------------------------------------- rocBLAS OPERATIONS
 void rocblas_initialize()
 {
     CHECK_ROCBLAS_ERROR(rocblas_create_handle(&handle));
@@ -114,29 +121,4 @@ void rocblas_multiply(const T *A, const T *B, T *C, rocblas_int m)
     CHECK_ROCBLAS_ERROR(rocblas_sgemm(handle, rocblas_operation_none, rocblas_operation_none, m, m, m, &alpha, A, m, B, m, &beta, C, m));
 }
 
-template <typename T>
-void verify_matrix_multiply(const T *A, const T *B, const T *C, int m)
-{
-    T *tempResult = hip_host_malloc<T>(m * m);
-    for (auto i = 0; i < m; i++)
-    {
-        for (auto j = 0; j < m; j++)
-        {
-            for (auto k = 0; k < m; k++)
-            {
-                tempResult[i * m + k] += A[i * m + j] * B[j * m + k];
-            }
-        }
-    }
-
-    for (auto i = 0; i < m; i++)
-    {
-        if (std::abs(C[i] - tempResult[i]) >= 1)
-        {
-            std::cerr << "Found error in vector at " << i << std::endl;
-            std::cerr << "Expected: " << C[i] << " Obtained: " << tempResult[i] << std::endl;
-            exit(EXIT_FAILURE);
-        }
-    }
-    hip_free(tempResult);
-}
+#endif // GPU_UTILS_HPP

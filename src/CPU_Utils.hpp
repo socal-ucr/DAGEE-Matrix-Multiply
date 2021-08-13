@@ -1,7 +1,12 @@
-#include <iostream>
-#include <vector>
+#ifndef CPU_UTILS_HPP
+#define CPU_UTILS_HPP
+
 #include <cmath>
+#include <iostream>
 #include <string>
+#include <vector>
+
+#include "common.hpp"
 
 // NOTE: Matrices have to be square.
 template <typename T>
@@ -58,3 +63,5 @@ std::vector<T> sub(const std::vector<T> &A, const std::vector<T> &B)
   }
   return C;
 }
+
+#endif // CPU_UTILS_HPP

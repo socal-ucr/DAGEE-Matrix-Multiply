@@ -208,10 +208,9 @@ int main(int argc, char **argv)
 {
     int n = (argc < 2) ? 8 : atoi(argv[1]);
 
-    std::vector<double> A(n * n, 1);
-    std::vector<double> B(n * n, 1);
+    std::vector<double> A(n * n);
+    std::vector<double> B(n * n);
     std::vector<double> C(n * n);
-    std::vector<double> C_verify(n * n);
 
     for (double i = 0; i < n * n; ++i)
     {
@@ -221,23 +220,11 @@ int main(int argc, char **argv)
     }
 
     strassenMul(A, B, C, n);
+
 #if DEBUG == 1
     print_matrix(C, "matrix_C");
 #endif
-    matrixMul(A, B, C_verify, n);
-#if DEBUG == 1
-    print_matrix(C_verify, "matrix_C_verify");
-#endif
-
-    for (int i = 0; i < n; ++i)
-    {
-        if (std::abs(C.at(i) - C_verify.at(i)) >= 1)
-        {
-            std::cerr << "Error at " << i << std::endl;
-            std::cerr << "Expected " << C.at(i) << "Obtained " << C_verify.at(i) << std::endl;
-            exit(0);
-        }
-    }
+    verify_matrix_multiply(&A[0], &B[0], &C[0], n);
 
     std::cout << "Success" << std::endl;
 

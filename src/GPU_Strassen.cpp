@@ -5,13 +5,13 @@
 #include <cstdlib>
 
 #include "GPU_Utils.hpp"
-#include "CPU_Utils.hpp"
 
 #define DEBUG 0
 
 template <typename T>
 void gpu_strassen_mul(T A, T B, T &C, int dim)
 {
+    rocblas_initialize();
 
     if (dim == 1)
     {
@@ -230,7 +230,6 @@ int main(int argc, char **argv)
     float *A = hip_host_malloc<float>(n * n);
     float *B = hip_host_malloc<float>(n * n);
     float *C = hip_host_malloc<float>(n * n);
-    float *C_verify = hip_host_malloc<float>(n * n);
 
     for (int i = 0; i < n * n; ++i)
     {
@@ -239,17 +238,12 @@ int main(int argc, char **argv)
         B[i] = val;
     }
 
-    rocblas_initialize();
-
     gpu_strassen_mul(A, B, C, n);
 
 #if DEBUG == 1
     print_matrix(C, n * n, "matrix_C");
 #endif
     verify_matrix_multiply(A, B, C, n);
-#if DEBUG == 1
-    print_matrix(C_verify, n * n, "matrix_C_verify");
-#endif
 
     std::cout << "Success" << std::endl;
 
