@@ -23,8 +23,8 @@ void verify_matrix_multiply(const T *A, const T *B, const T *C, int m)
   {
     if (std::abs(C[i] - tempResult[i]) >= 1)
     {
-      std::cerr << "Found error in vector at " << i << std::endl;
-      std::cerr << "Expected: " << C[i] << " Obtained: " << tempResult[i] << std::endl;
+      std::cerr << "Found error in Matrix Mul at " << i << std::endl;
+      std::cerr << "Expected: " << tempResult[i] << " Obtained: " << C[i] << std::endl;
       exit(EXIT_FAILURE);
     }
   }
@@ -38,6 +38,7 @@ void verify_matrix_addition(const T *A, const T *B, const T *C, int m)
     if (C[i] != A[i] + B[i])
     {
       std::cerr << "Found error in vector Add at " << i << std::endl;
+      std::cerr << "Expected: " << A[i] + B[i] << " Obtained: " << C[i] << std::endl;
       exit(EXIT_FAILURE);
     }
   }
@@ -51,6 +52,7 @@ void verify_matrix_subtraction(const T *A, const T *B, const T *C, int m)
     if (C[i] != A[i] - B[i])
     {
       std::cerr << "Found error in vector Sub at " << i << std::endl;
+      std::cerr << "Expected: " << A[i] - B[i] << " Obtained: " << C[i] << std::endl;
       exit(EXIT_FAILURE);
     }
   }

@@ -1,7 +1,7 @@
 #include <iostream>
 
-#include <verify.hpp>
 #include <GPU_Utils.hpp>
+#include <verify.hpp>
 
 float valA = 3;
 float valB = 2;
@@ -26,7 +26,7 @@ int main()
     verify_matrix_addition(arrA, arrB, resultAdd, n);
 
     float *resultSub = hip_host_malloc<float>(n * n);
-    rocblas_sub(arrA, arrB, resultSub, n);
+    rocblas_subtract(arrA, arrB, resultSub, n);
     hipDeviceSynchronize();
     verify_matrix_subtraction(arrA, arrB, resultSub, n);
 

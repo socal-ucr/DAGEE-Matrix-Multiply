@@ -98,31 +98,31 @@ void gpu_strassen_mul(T A, T B, T &C, int dim)
 
         // S_2 = S_1 - A_11
         float *S_2 = hip_host_malloc<float>(m * m);
-        rocblas_sub(S_1, A_11, S_2, m);
+        rocblas_subtract(S_1, A_11, S_2, m);
 
         // S_3 = A_11 - A_21
         float *S_3 = hip_host_malloc<float>(m * m);
-        rocblas_sub(A_11, A_21, S_3, m);
+        rocblas_subtract(A_11, A_21, S_3, m);
 
         // S_4 = A_12 - S_2
         float *S_4 = hip_host_malloc<float>(m * m);
-        rocblas_sub(A_12, S_2, S_4, m);
+        rocblas_subtract(A_12, S_2, S_4, m);
 
         // S_5 = B_12 - B_11
         float *S_5 = hip_host_malloc<float>(m * m);
-        rocblas_sub(B_12, B_11, S_5, m);
+        rocblas_subtract(B_12, B_11, S_5, m);
 
         // S_6 = B_22 - S_5
         float *S_6 = hip_host_malloc<float>(m * m);
-        rocblas_sub(B_22, S_5, S_6, m);
+        rocblas_subtract(B_22, S_5, S_6, m);
 
         // S_7 = B_22 - B_12
         float *S_7 = hip_host_malloc<float>(m * m);
-        rocblas_sub(B_22, B_12, S_7, m);
+        rocblas_subtract(B_22, B_12, S_7, m);
 
         // S_8 = S_6 - B_21
         float *S_8 = hip_host_malloc<float>(m * m);
-        rocblas_sub(S_6, B_21, S_8, m);
+        rocblas_subtract(S_6, B_21, S_8, m);
 
         // ----------------------------------------------
 
@@ -180,7 +180,7 @@ void gpu_strassen_mul(T A, T B, T &C, int dim)
 
         // C_21 = V_2 - M_7
         float *C_21 = hip_host_malloc<float>(m * m);
-        rocblas_sub(V_2, M_7, C_21, m);
+        rocblas_subtract(V_2, M_7, C_21, m);
 
         // C_22 = V_2 + M_5
         float *C_22 = hip_host_malloc<float>(m * m);
