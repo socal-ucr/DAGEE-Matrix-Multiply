@@ -13,10 +13,20 @@ template <typename T>
 void dagee_test(size_t n, bool sequentially = true)
 {
     // unsigned numThreads = 1;
-    size_t threadsPerBlock = 1024;
-    size_t blocks = ((n * n) + threadsPerBlock - 1) / threadsPerBlock;
+    dim3 threadsPerBlock = (1024);
+    dim3 blocks = (((n * n) + threadsPerBlock.x - 1) / threadsPerBlock.x);
 
-    std::vector<T> A(n * n, valA);
+    dim3 mulThreadsPerBlock;
+    dim3 mulBlocks;
+
+    mulThreadsPerBlock.x = TILE_SIZE;
+    mulThreadsPerBlock.y = TILE_SIZE;
+
+    mulBlocks.x = (n + mulThreadsPerBlock.x - 1) / mulThreadsPerBlock.x;
+    mulBlocks.y = (n + mulThreadsPerBlock.y - 1) / mulThreadsPerBlock.y;
+
+    std::vector<T>
+        A(n * n, valA);
     std::vector<T> B(n * n, valB);
     std::vector<T> Res(n * n);
 
@@ -39,9 +49,9 @@ void dagee_test(size_t n, bool sequentially = true)
     // CpuExec cpuEx;
     GpuExec gpuEx;
 
-    auto addFunc = gpuEx.registerKernel<T *, T *, T *, size_t>(&hip_add<T>);
-    auto subFunc = gpuEx.registerKernel<T *, T *, T *, size_t>(&hip_subtract<T>);
-    auto mulFunc = gpuEx.registerKernel<T *, T *, T *, size_t>(&hip_multiply<T>);
+    auto addFunc = gpuEx.registerKernel<T *, T *, T *, dim3>(&hip_add<T>);
+    auto subFunc = gpuEx.registerKernel<T *, T *, T *, dim3>(&hip_subtract<T>);
+    auto mulFunc = gpuEx.registerKernel<T *, T *, T *, dim3>(&hip_multiply<T>);
 
     // Define and run tasks
 
@@ -52,7 +62,7 @@ void dagee_test(size_t n, bool sequentially = true)
 
         auto subTask = gpuEx.launchTask(gpuEx.makeTask(blocks, threadsPerBlock, subFunc, arrA, arrB, resultSub, n), {addTask});
 
-        auto mulTask = gpuEx.launchTask(gpuEx.makeTask(blocks, threadsPerBlock, mulFunc, arrA, arrB, resultMul, n), {subTask});
+        auto mulTask = gpuEx.launchTask(gpuEx.makeTask(mulBlocks, mulThreadsPerBlock, mulFunc, arrA, arrB, resultMul, n), {subTask});
 
         gpuEx.waitOnTask(mulTask);
     }
