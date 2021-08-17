@@ -73,7 +73,7 @@ void hip_free(T *ptr)
 }
 
 template <typename T>
-__global__ void hip_add(T *A, T *B, T *C, size_t n)
+__global__ void hip_add_kernel(const T *A, const T *B, T *C, size_t n)
 {
     size_t i = hipBlockDim_x * hipBlockIdx_x + hipThreadIdx_x;
 
@@ -84,7 +84,7 @@ __global__ void hip_add(T *A, T *B, T *C, size_t n)
 }
 
 template <typename T>
-__global__ void hip_subtract(T *A, T *B, T *C, size_t n)
+__global__ void hip_subtract_kernel(const T *A, const T *B, T *C, size_t n)
 {
     size_t i = hipBlockDim_x * hipBlockIdx_x + hipThreadIdx_x;
 
@@ -95,7 +95,7 @@ __global__ void hip_subtract(T *A, T *B, T *C, size_t n)
 }
 
 template <typename T>
-__global__ void hip_multiply(T *A, T *B, T *C, size_t n)
+__global__ void hip_multiply_kernel(const T *A, const T *B, T *C, size_t n)
 {
     __shared__ T ds_A[TILE_SIZE][TILE_SIZE];
     __shared__ T ds_B[TILE_SIZE][TILE_SIZE];
@@ -131,28 +131,49 @@ __global__ void hip_multiply(T *A, T *B, T *C, size_t n)
 }
 
 template <typename T>
-void hip_memcpy(T *dstPtr, T *srcPtr, size_t n, hipMemcpyKind kind = hipMemcpyDefault)
+void hip_add(const T *A, const T *B, T *C, size_t n)
 {
-    CHECK_HIP_ERROR(hipMemcpy(dstPtr, srcPtr, sizeof(T) * n, kind));
+    dim3 threadsPerBlock = (1024);
+    dim3 blocks = (((n * n) + threadsPerBlock.x - 1) / threadsPerBlock.x);
+    hipLaunchKernelGGL(hip_add_kernel,
+                       dim3(blocks), dim3(threadsPerBlock), 0, 0,
+                       A, B, C, n * n);
+    hipDeviceSynchronize();
 }
 
 template <typename T>
-void print_matrix(T *matrix, int length, std::string matrix_name = "Unknown Matrix")
+void hip_subtract(const T *A, const T *B, T *C, size_t n)
 {
-    std::cout << std::endl
-              << "Printing Matrix: " << matrix_name << std::endl;
+    dim3 threadsPerBlock = (1024);
+    dim3 blocks = (((n * n) + threadsPerBlock.x - 1) / threadsPerBlock.x);
+    hipLaunchKernelGGL(hip_subtract_kernel,
+                       dim3(blocks), dim3(threadsPerBlock), 0, 0,
+                       A, B, C, n * n);
+    hipDeviceSynchronize();
+}
 
-    std::cout << "Size of Matrix: " << length << std::endl;
+template <typename T>
+void hip_multiply(const T *A, const T *B, T *C, size_t n)
+{
+    dim3 threadsPerBlock;
+    dim3 blocks;
 
-    for (int i = 0; i < length; i++)
-    {
-        if (fmod(i, sqrt(length)) == 0)
-        {
-            std::cout << std::endl;
-        }
-        std::cout << matrix[i] << "\t";
-    }
-    std::cout << std::endl;
+    threadsPerBlock.x = TILE_SIZE;
+    threadsPerBlock.y = TILE_SIZE;
+
+    blocks.x = (n + threadsPerBlock.x - 1) / threadsPerBlock.x;
+    blocks.y = (n + threadsPerBlock.y - 1) / threadsPerBlock.y;
+
+    hipLaunchKernelGGL(hip_multiply_kernel,
+                       dim3(blocks), dim3(threadsPerBlock), 0, 0,
+                       A, B, C, n);
+    hipDeviceSynchronize();
+}
+
+template <typename T>
+void hip_memcpy(T *dstPtr, T *srcPtr, size_t n, hipMemcpyKind kind = hipMemcpyDefault)
+{
+    CHECK_HIP_ERROR(hipMemcpy(dstPtr, srcPtr, sizeof(T) * n, kind));
 }
 
 // ----------------------------------------------------------- rocBLAS OPERATIONS

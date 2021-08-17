@@ -229,10 +229,10 @@ int main(int argc, char **argv)
 
 #if DEBUG == 1
     print_matrix(C, "matrix_C");
-#endif
     verify_matrix_multiply(&A[0], &B[0], &C[0], n);
+#endif
 
-    std::cout << "Success" << std::endl;
+    std::cout << "Done" << std::endl;
 
 #if TIME == 1
     auto duration_s = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);

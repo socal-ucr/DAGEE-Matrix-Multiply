@@ -24,7 +24,7 @@ ifeq ($(TIME), 1)
 	CXXFLAGS += -DTIME
 endif
 
-all: GPU_Strassen CPU_Strassen test_rocblas_wrappers test_ops_dagee
+all: GPU_Strassen CPU_Strassen test_rocblas_wrappers test_ops_dagee GPU_Strassen_dagee
 
 GPU_Strassen:
 	$(CXX) $(CXXFLAGS) src/GPU_Strassen.cpp $(LDFLAGS) -o GPU_Strassen
@@ -38,5 +38,8 @@ test_rocblas_wrappers:
 test_ops_dagee:
 	$(CXX) $(DAGEE_INC) $(ATMI_INC) $(CXXFLAGS) src/test_ops_dagee.cpp $(LDFLAGS) $(ATMI_LDFLAGS) -o test_ops_dagee
 
+GPU_Strassen_dagee:
+	$(CXX) $(DAGEE_INC) $(ATMI_INC) $(CXXFLAGS) src/GPU_Strassen_dagee.cpp $(LDFLAGS) $(ATMI_LDFLAGS) -o GPU_Strassen_dagee
+
 clean:
-	rm -rf GPU_Strassen CPU_Strassen test_rocblas_wrappers test_ops_dagee
+	rm -rf GPU_Strassen CPU_Strassen test_rocblas_wrappers test_ops_dagee GPU_Strassen_dagee

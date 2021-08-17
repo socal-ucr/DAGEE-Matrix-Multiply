@@ -49,9 +49,9 @@ void dagee_test(size_t n, bool sequentially = true)
     // CpuExec cpuEx;
     GpuExec gpuEx;
 
-    auto addFunc = gpuEx.registerKernel<T *, T *, T *, dim3>(&hip_add<T>);
-    auto subFunc = gpuEx.registerKernel<T *, T *, T *, dim3>(&hip_subtract<T>);
-    auto mulFunc = gpuEx.registerKernel<T *, T *, T *, dim3>(&hip_multiply<T>);
+    auto addFunc = gpuEx.registerKernel<T *, T *, T *, dim3>(&hip_add_kernel<T>);
+    auto subFunc = gpuEx.registerKernel<T *, T *, T *, dim3>(&hip_subtract_kernel<T>);
+    auto mulFunc = gpuEx.registerKernel<T *, T *, T *, dim3>(&hip_multiply_kernel<T>);
 
     // Define and run tasks
 

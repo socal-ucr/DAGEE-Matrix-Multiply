@@ -4,6 +4,32 @@
 #include <iostream>
 #include <vector>
 
+// NOTE: Matrices have to be square.
+template <typename T>
+void print_matrix(T *matrix, size_t length, std::string matrix_name = "Unknown Matrix")
+{
+  std::cout << std::endl
+            << "Printing Matrix: " << matrix_name << std::endl;
+
+  std::cout << "Size of Matrix: " << length << std::endl;
+
+  for (int i = 0; i < length; i++)
+  {
+    if (fmod(i, sqrt(length)) == 0)
+    {
+      std::cout << std::endl;
+    }
+    std::cout << matrix[i] << "\t";
+  }
+  std::cout << std::endl;
+}
+
+template <typename T>
+void print_matrix(const std::vector<T> &matrix, std::string matrix_name = "Unknown Matrix")
+{
+  print_matrix(&matrix[0], matrix.size(), matrix_name);
+}
+
 template <typename T>
 void verify_matrix_multiply(const T *A, const T *B, const T *C, int m)
 {
@@ -28,6 +54,7 @@ void verify_matrix_multiply(const T *A, const T *B, const T *C, int m)
       exit(EXIT_FAILURE);
     }
   }
+  std::cout << "Success" << std::endl;
 }
 
 template <typename T>
@@ -42,6 +69,7 @@ void verify_matrix_addition(const T *A, const T *B, const T *C, int m)
       exit(EXIT_FAILURE);
     }
   }
+  std::cout << "Success" << std::endl;
 }
 
 template <typename T>
@@ -56,6 +84,7 @@ void verify_matrix_subtraction(const T *A, const T *B, const T *C, int m)
       exit(EXIT_FAILURE);
     }
   }
+  std::cout << "Success" << std::endl;
 }
 
 #endif // COMMON_HPP
