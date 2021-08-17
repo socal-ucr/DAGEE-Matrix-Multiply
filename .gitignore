@@ -4,3 +4,5 @@ sequential-strassen
 CPU_Strassen
 GPU_Strassen
 test_rocblas_wrappers
+test_ops_dagee
+GPU_Strassen_dagee

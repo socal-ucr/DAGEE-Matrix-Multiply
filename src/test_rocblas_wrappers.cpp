@@ -1,35 +1,10 @@
 #include <iostream>
-#include "GPU_Utils.hpp"
-#include "CPU_Utils.hpp"
+
+#include <GPU_Utils.hpp>
+#include <verify.hpp>
 
 float valA = 3;
 float valB = 2;
-
-template <typename T>
-void verify_matrix_addition(const T *A, const T *B, const T *C, int m)
-{
-    for (auto i = 0; i < m * m; ++i)
-    {
-        if (C[i] != A[i] + B[i])
-        {
-            std::cerr << "Found error in vector Add at " << i << std::endl;
-            exit(EXIT_FAILURE);
-        }
-    }
-}
-
-template <typename T>
-void verify_matrix_subtraction(const T *A, const T *B, const T *C, int m)
-{
-    for (auto i = 0; i < m * m; ++i)
-    {
-        if (C[i] != A[i] - B[i])
-        {
-            std::cerr << "Found error in vector Sub at " << i << std::endl;
-            exit(EXIT_FAILURE);
-        }
-    }
-}
 
 int main()
 {
@@ -51,7 +26,7 @@ int main()
     verify_matrix_addition(arrA, arrB, resultAdd, n);
 
     float *resultSub = hip_host_malloc<float>(n * n);
-    rocblas_sub(arrA, arrB, resultSub, n);
+    rocblas_subtract(arrA, arrB, resultSub, n);
     hipDeviceSynchronize();
     verify_matrix_subtraction(arrA, arrB, resultSub, n);
 
@@ -65,4 +40,8 @@ int main()
     hip_free<float>(resultSub);
     hip_free<float>(resultAdd);
     hip_free<float>(resultMul);
+
+    std::cout << "Success" << std::endl;
+
+    return 0;
 }

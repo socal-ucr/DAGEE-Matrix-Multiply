@@ -1,12 +1,12 @@
-#include <iostream>
-#include <vector>
+#include <chrono>
 #include <cmath>
-#include <string>
 #include <cstdlib>
+#include <iostream>
+#include <string>
+#include <vector>
 
-#include "CPU_Utils.hpp"
-
-#define DEBUG 0
+#include <CPU_Utils.hpp>
+#include <verify.hpp>
 
 template <typename T>
 void strassenMul(std::vector<T> A, std::vector<T> B, std::vector<double> &C, int dim)
@@ -208,10 +208,9 @@ int main(int argc, char **argv)
 {
     int n = (argc < 2) ? 8 : atoi(argv[1]);
 
-    std::vector<double> A(n * n, 1);
-    std::vector<double> B(n * n, 1);
+    std::vector<double> A(n * n);
+    std::vector<double> B(n * n);
     std::vector<double> C(n * n);
-    std::vector<double> C_verify(n * n);
 
     for (double i = 0; i < n * n; ++i)
     {
@@ -220,26 +219,25 @@ int main(int argc, char **argv)
         B[i] = val;
     }
 
+#if TIME == 1
+    auto start = std::chrono::high_resolution_clock::now();
+#endif
     strassenMul(A, B, C, n);
+#if TIME == 1
+    auto stop = std::chrono::high_resolution_clock::now();
+#endif
+
 #if DEBUG == 1
     print_matrix(C, "matrix_C");
-#endif
-    matrixMul(A, B, C_verify, n);
-#if DEBUG == 1
-    print_matrix(C_verify, "matrix_C_verify");
+    verify_matrix_multiply(&A[0], &B[0], &C[0], n);
 #endif
 
-    for (int i = 0; i < n; ++i)
-    {
-        if (std::abs(C.at(i) - C_verify.at(i)) >= 1)
-        {
-            std::cerr << "Error at " << i << std::endl;
-            std::cerr << "Expected " << C.at(i) << "Obtained " << C_verify.at(i) << std::endl;
-            exit(0);
-        }
-    }
+    std::cout << "Done" << std::endl;
 
-    std::cout << "Success" << std::endl;
+#if TIME == 1
+    auto duration_s = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+    std::cout << "Runtime(microseconds): " << duration_s.count() << std::endl;
+#endif
 
     return 0;
 }
