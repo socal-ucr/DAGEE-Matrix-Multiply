@@ -11,7 +11,7 @@ INC = -Iinclude -I$(ROCM_PATH)/include -I$(ROCBLAS_PATH)/include
 DAGEE_INC = -I$(DAGEE_PATH)/DAGEE-lib/include -I$(DAGEE_PATH)/cppUtils/include
 ATMI_INC = -I$(ATMI_PATH)/include
 
-CXXFLAGS =  $(INC)
+CXXFLAGS =  $(INC) -std=c++17
 LDFLAGS = -L$(ROCBLAS_PATH)/lib/ -lrocblas
 
 ATMI_LDFLAGS = -L$(ATMI_PATH)/lib -latmi_runtime
@@ -24,13 +24,13 @@ ifeq ($(TIME), 1)
 	CXXFLAGS += -DTIME
 endif
 
-all: GPU_Strassen CPU_Strassen test_rocblas_wrappers test_ops_dagee GPU_Strassen_dagee
-
-GPU_Strassen:
-	$(CXX) $(CXXFLAGS) src/GPU_Strassen.cpp $(LDFLAGS) -o GPU_Strassen
+all: CPU_Strassen GPU_Strassen test_rocblas_wrappers test_ops_dagee GPU_Strassen_dagee CPU_Strassen_dagee
 
 CPU_Strassen:
 	$(CXX) $(CXXFLAGS) src/CPU_Strassen.cpp $(LDFLAGS) -o CPU_Strassen
+
+GPU_Strassen:
+	$(CXX) $(CXXFLAGS) src/GPU_Strassen.cpp $(LDFLAGS) -o GPU_Strassen
 
 test_rocblas_wrappers:
 	$(CXX) $(CXXFLAGS) src/test_rocblas_wrappers.cpp $(LDFLAGS) -o test_rocblas_wrappers
@@ -40,6 +40,9 @@ test_ops_dagee:
 
 GPU_Strassen_dagee:
 	$(CXX) $(DAGEE_INC) $(ATMI_INC) $(CXXFLAGS) src/GPU_Strassen_dagee.cpp $(LDFLAGS) $(ATMI_LDFLAGS) -o GPU_Strassen_dagee
+
+CPU_Strassen_dagee:
+	$(CXX) $(DAGEE_INC) $(ATMI_INC) $(CXXFLAGS) src/CPU_Strassen_dagee.cpp $(LDFLAGS) $(ATMI_LDFLAGS) -o CPU_Strassen_dagee
 
 clean:
 	rm -rf GPU_Strassen CPU_Strassen test_rocblas_wrappers test_ops_dagee GPU_Strassen_dagee
