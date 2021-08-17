@@ -6,6 +6,7 @@
 #include <vector>
 
 #include <CPU_Utils.hpp>
+#include <GPU_Utils.hpp>
 #include <verify.hpp>
 
 #include <dagee/ATMIalloc.h>
@@ -131,9 +132,9 @@ void cpu_strassen_mul_dagee(const T *A, const T *B, T *C, size_t dim, BufMgr &bu
 
     // Register kernel functions
 
-    auto addFunc = cpuEx.registerKernel<T *, T *, T *, dim3>(&hip_add_kernel<T>);
-    auto subFunc = cpuEx.registerKernel<T *, T *, T *, dim3>(&hip_subtract_kernel<T>);
-    auto mulFunc = cpuEx.registerKernel<T *, T *, T *, dim3>(&hip_multiply_kernel<T>);
+    auto addFunc = cpuEx.registerKernel<T *, T *, T *, size_t>(&add_kernel<T>);
+    auto subFunc = cpuEx.registerKernel<T *, T *, T *, size_t>(&sub_kernel<T>);
+    auto mulFunc = cpuEx.registerKernel<T *, T *, T *, size_t>(&matrixMul_kernel<T>);
 
     // Create Tasks
 
@@ -146,13 +147,13 @@ void cpu_strassen_mul_dagee(const T *A, const T *B, T *C, size_t dim, BufMgr &bu
     auto S_7Task = dag->addNode(cpuEx.makeTask(numThreads, subFunc, B_22, B_12, S_7, m));
     auto S_8Task = dag->addNode(cpuEx.makeTask(numThreads, subFunc, S_6, B_21, S_8, m));
 
-    auto M_1Task = dag->addNode(cpuEx.makeTask(numThreads mulFunc, S_6, S_2, M_1, m));
-    auto M_2Task = dag->addNode(cpuEx.makeTask(numThreads mulFunc, B_11, A_11, M_2, m));
-    auto M_3Task = dag->addNode(cpuEx.makeTask(numThreads mulFunc, B_21, A_12, M_3, m));
-    auto M_4Task = dag->addNode(cpuEx.makeTask(numThreads mulFunc, S_7, S_3, M_4, m));
-    auto M_5Task = dag->addNode(cpuEx.makeTask(numThreads mulFunc, S_5, S_1, M_5, m));
-    auto M_6Task = dag->addNode(cpuEx.makeTask(numThreads mulFunc, B_22, S_4, M_6, m));
-    auto M_7Task = dag->addNode(cpuEx.makeTask(numThreads mulFunc, S_8, A_22, M_7, m));
+    auto M_1Task = dag->addNode(cpuEx.makeTask(numThreads, mulFunc, S_6, S_2, M_1, m));
+    auto M_2Task = dag->addNode(cpuEx.makeTask(numThreads, mulFunc, B_11, A_11, M_2, m));
+    auto M_3Task = dag->addNode(cpuEx.makeTask(numThreads, mulFunc, B_21, A_12, M_3, m));
+    auto M_4Task = dag->addNode(cpuEx.makeTask(numThreads, mulFunc, S_7, S_3, M_4, m));
+    auto M_5Task = dag->addNode(cpuEx.makeTask(numThreads, mulFunc, S_5, S_1, M_5, m));
+    auto M_6Task = dag->addNode(cpuEx.makeTask(numThreads, mulFunc, B_22, S_4, M_6, m));
+    auto M_7Task = dag->addNode(cpuEx.makeTask(numThreads, mulFunc, S_8, A_22, M_7, m));
 
     auto V_1Task = dag->addNode(cpuEx.makeTask(numThreads, addFunc, M_1, M_2, V_1, m));
     auto V_2Task = dag->addNode(cpuEx.makeTask(numThreads, addFunc, V_1, M_4, V_2, m));

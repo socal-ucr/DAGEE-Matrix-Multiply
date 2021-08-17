@@ -11,7 +11,7 @@ INC = -Iinclude -I$(ROCM_PATH)/include -I$(ROCBLAS_PATH)/include
 DAGEE_INC = -I$(DAGEE_PATH)/DAGEE-lib/include -I$(DAGEE_PATH)/cppUtils/include
 ATMI_INC = -I$(ATMI_PATH)/include
 
-CXXFLAGS =  $(INC) -std=c++17
+CXXFLAGS =  $(INC)
 LDFLAGS = -L$(ROCBLAS_PATH)/lib/ -lrocblas
 
 ATMI_LDFLAGS = -L$(ATMI_PATH)/lib -latmi_runtime

@@ -18,7 +18,16 @@ std::vector<T> add(const std::vector<T> &A, const std::vector<T> &B)
 }
 
 template <typename T>
-void matrixMul(const std::vector<T> &A, const std::vector<T> &B, std::vector<T> &C, size_t n)
+void add_kernel(const T *A, const T *B, T *C, size_t n)
+{
+  for (auto i = 0; i < n; i++)
+  {
+    C[i] = A[i] + B[i];
+  }
+}
+
+template <typename T>
+void matrixMul_kernel(const T *A, const T *B, T *C, size_t n)
 {
   for (auto i = 0; i < n; i++)
   {
@@ -33,7 +42,13 @@ void matrixMul(const std::vector<T> &A, const std::vector<T> &B, std::vector<T> 
 }
 
 template <typename T>
-std::vector<T> sub(const std::vector<T> &A, const std::vector<T> &B)
+void matrixMul(const std::vector<T> &A, const std::vector<T> &B, std::vector<T> &C, size_t n)
+{
+  matrixMul_kernel(&A[0], &B[0], &C[0], n);
+}
+
+template <typename T>
+void sub(const std::vector<T> &A, const std::vector<T> &B)
 {
   std::vector<T> C;
   for (T j = 0; j < A.size(); ++j)
@@ -41,6 +56,15 @@ std::vector<T> sub(const std::vector<T> &A, const std::vector<T> &B)
     C.push_back(A.at(j) - B.at(j));
   }
   return C;
+}
+
+template <typename T>
+void sub_kernel(const T *A, const T *B, T *C, size_t n)
+{
+  for (auto i = 0; i < n; i++)
+  {
+    C[i] = A[i] - B[i];
+  }
 }
 
 #endif // CPU_UTILS_HPP
