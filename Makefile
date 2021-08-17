@@ -24,13 +24,19 @@ ifeq ($(TIME), 1)
 	CXXFLAGS += -DTIME
 endif
 
-all: CPU_Strassen GPU_Strassen test_rocblas_wrappers test_ops_dagee GPU_Strassen_dagee CPU_Strassen_dagee
+all: CPU_Strassen GPU_Strassen test_rocblas_wrappers test_ops_dagee GPU_Strassen_dagee CPU_Strassen_dagee CPU_naive GPU_naive
 
 CPU_Strassen:
 	$(CXX) $(CXXFLAGS) src/CPU_Strassen.cpp $(LDFLAGS) -o CPU_Strassen
 
 GPU_Strassen:
 	$(CXX) $(CXXFLAGS) src/GPU_Strassen.cpp $(LDFLAGS) -o GPU_Strassen
+
+CPU_naive:
+	$(CXX) $(CXXFLAGS) src/CPU_naive.cpp $(LDFLAGS) -o CPU_naive
+
+GPU_naive:
+	$(CXX) $(CXXFLAGS) src/GPU_naive.cpp $(LDFLAGS) -o GPU_naive
 
 test_rocblas_wrappers:
 	$(CXX) $(CXXFLAGS) src/test_rocblas_wrappers.cpp $(LDFLAGS) -o test_rocblas_wrappers
@@ -45,4 +51,4 @@ CPU_Strassen_dagee:
 	$(CXX) $(DAGEE_INC) $(ATMI_INC) $(CXXFLAGS) src/CPU_Strassen_dagee.cpp $(LDFLAGS) $(ATMI_LDFLAGS) -o CPU_Strassen_dagee
 
 clean:
-	rm -rf GPU_Strassen CPU_Strassen test_rocblas_wrappers test_ops_dagee GPU_Strassen_dagee CPU_Strassen_dagee
+	rm -rf GPU_Strassen CPU_Strassen test_rocblas_wrappers test_ops_dagee GPU_Strassen_dagee CPU_Strassen_dagee CPU_naive GPU_naive

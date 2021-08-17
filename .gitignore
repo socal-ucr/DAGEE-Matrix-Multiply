@@ -7,3 +7,5 @@ test_rocblas_wrappers
 test_ops_dagee
 GPU_Strassen_dagee
 CPU_Strassen_dagee
+CPU_naive
+GPU_naive
