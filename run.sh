@@ -2,7 +2,7 @@
 
 if [ $# -eq 0 ]
 then
-  echo "$0 [--gpu | --cpu | --gpu-dagee | --cpu-dagee]"
+  echo "$0 [--gpu | --cpu | --gpu-dagee | --cpu-dagee | --cpu-naive | --gpu-naive]"
   exit
 fi
 
@@ -19,9 +19,15 @@ then
   cmd="GPU_Strassen_dagee"
 elif [ $1 = "--cpu-dagee" ]
 then
+  cmd="CPU_naive"
+elif [ $1 = "--cpu-naive" ]
+then
+  cmd="GPU_naive"
+elif [ $1 = "--gpu-naive" ]
+then
   cmd="CPU_Strassen_dagee"
 else
-  echo "$0 [--gpu | --cpu | --gpu-dagee | --cpu-dagee]"
+  echo "$0 [--gpu | --cpu | --gpu-dagee | --cpu-dagee | --cpu-naive | --gpu-naive]"
   exit
 fi
 
