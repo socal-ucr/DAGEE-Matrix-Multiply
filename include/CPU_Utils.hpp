@@ -48,7 +48,7 @@ void matrixMul(const std::vector<T> &A, const std::vector<T> &B, std::vector<T> 
 }
 
 template <typename T>
-void sub(const std::vector<T> &A, const std::vector<T> &B)
+std::vector<T> sub(const std::vector<T> &A, const std::vector<T> &B)
 {
   std::vector<T> C;
   for (T j = 0; j < A.size(); ++j)
