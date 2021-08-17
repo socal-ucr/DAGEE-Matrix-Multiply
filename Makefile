@@ -45,4 +45,4 @@ CPU_Strassen_dagee:
 	$(CXX) $(DAGEE_INC) $(ATMI_INC) $(CXXFLAGS) src/CPU_Strassen_dagee.cpp $(LDFLAGS) $(ATMI_LDFLAGS) -o CPU_Strassen_dagee
 
 clean:
-	rm -rf GPU_Strassen CPU_Strassen test_rocblas_wrappers test_ops_dagee GPU_Strassen_dagee
+	rm -rf GPU_Strassen CPU_Strassen test_rocblas_wrappers test_ops_dagee GPU_Strassen_dagee CPU_Strassen_dagee
