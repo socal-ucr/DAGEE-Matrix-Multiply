@@ -2,7 +2,7 @@
 
 if [ $# -eq 0 ]
 then
-  echo "$0 [--gpu | --cpu | --gpu-dagee]"
+  echo "$0 [--gpu | --cpu | --gpu-dagee | --cpu-dagee]"
   exit
 fi
 
@@ -17,8 +17,11 @@ then
 elif [ $1 = "--gpu-dagee" ]
 then
   cmd="GPU_Strassen_dagee"
+elif [ $1 = "--cpu-dagee" ]
+then
+  cmd="CPU_Strassen_dagee"
 else
-  echo "$0 [--gpu | --cpu | --gpu-dagee]"
+  echo "$0 [--gpu | --cpu | --gpu-dagee | --cpu-dagee]"
   exit
 fi
 
