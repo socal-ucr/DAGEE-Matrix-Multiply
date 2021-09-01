@@ -1,6 +1,6 @@
 ROCM_PATH ?= /opt/rocm
 ROCBLAS_PATH ?= $(ROCM_PATH)/rocblas
-DAGEE_PATH ?= $(CURDIR)/DAGEE
+DAGEE_PATH ?= $(CURDIR)/../DAGEE
 ATMI_PATH ?= $(ROCM_PATH)/atmi
 
 DEBUG ?= 0
