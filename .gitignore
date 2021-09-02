@@ -5,6 +5,7 @@ CPU_Strassen
 GPU_Strassen
 test_rocblas_wrappers
 test_ops_dagee
+test_cu_mask
 GPU_Strassen_dagee
 CPU_Strassen_dagee
 CPU_naive

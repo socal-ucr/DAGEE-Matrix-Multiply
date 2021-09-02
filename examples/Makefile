@@ -12,9 +12,11 @@ DAGEE_INC = -I$(DAGEE_PATH)/DAGEE-lib/include -I$(DAGEE_PATH)/cppUtils/include
 ATMI_INC = -I$(ATMI_PATH)/include
 
 CXXFLAGS =  $(INC)
-LDFLAGS = -L$(ROCBLAS_PATH)/lib/ -lrocblas
+LDFLAGS = -L$(ROCBLAS_PATH)/lib/ -lrocblas -Wl,-rpath=$(ROCBLAS_PATH)/lib
 
-ATMI_LDFLAGS = -L$(ATMI_PATH)/lib -latmi_runtime
+
+ATMI_LDFLAGS = -L$(ATMI_PATH)/lib -latmi_runtime -Wl,-rpath=$(ATMI_PATH)/lib
+
 
 ifeq ($(DEBUG), 1)
 	CXXFLAGS += -DDEBUG
@@ -24,7 +26,7 @@ ifeq ($(TIME), 1)
 	CXXFLAGS += -DTIME
 endif
 
-all: CPU_Strassen GPU_Strassen test_rocblas_wrappers test_ops_dagee GPU_Strassen_dagee CPU_Strassen_dagee CPU_naive GPU_naive
+all: CPU_Strassen GPU_Strassen test_rocblas_wrappers test_ops_dagee test_cu_mask GPU_Strassen_dagee CPU_Strassen_dagee CPU_naive GPU_naive
 
 CPU_Strassen:
 	$(CXX) $(CXXFLAGS) src/CPU_Strassen.cpp $(LDFLAGS) -o CPU_Strassen
@@ -44,6 +46,9 @@ test_rocblas_wrappers:
 test_ops_dagee:
 	$(CXX) $(DAGEE_INC) $(ATMI_INC) $(CXXFLAGS) src/test_ops_dagee.cpp $(LDFLAGS) $(ATMI_LDFLAGS) -o test_ops_dagee
 
+test_cu_mask:
+	$(CXX) $(DAGEE_INC) $(ATMI_INC) $(CXXFLAGS) src/test_cu_mask.cpp $(LDFLAGS) $(ATMI_LDFLAGS) -o test_cu_mask
+
 GPU_Strassen_dagee:
 	$(CXX) $(DAGEE_INC) $(ATMI_INC) $(CXXFLAGS) src/GPU_Strassen_dagee.cpp $(LDFLAGS) $(ATMI_LDFLAGS) -o GPU_Strassen_dagee
 
@@ -51,4 +56,4 @@ CPU_Strassen_dagee:
 	$(CXX) $(DAGEE_INC) $(ATMI_INC) $(CXXFLAGS) src/CPU_Strassen_dagee.cpp $(LDFLAGS) $(ATMI_LDFLAGS) -o CPU_Strassen_dagee
 
 clean:
-	rm -rf GPU_Strassen CPU_Strassen test_rocblas_wrappers test_ops_dagee GPU_Strassen_dagee CPU_Strassen_dagee CPU_naive GPU_naive
+	rm -rf GPU_Strassen CPU_Strassen test_rocblas_wrappers test_ops_dagee test_cu_mask GPU_Strassen_dagee CPU_Strassen_dagee CPU_naive GPU_naive
