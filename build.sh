@@ -24,7 +24,7 @@ dpkg -x aomp_Ubuntu1804_13.0-5_amd64.deb ${INSTALL_DIR}/aomp
 cd ${ATMI_DIR}
 cd src
 rm -rf build && mkdir build && cd build
-CXX=${INSTALL_DIR}/bin/hipcc ${CMAKE} -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR}/atmi -DROCM_ROOT=${INSTALL_DIR} -DHSA_ROOT=${INSTALL_DIR} -DAMD_LLVM=${INSTALL_DIR}/aomp -DGFX_VER=gfx906 -DATMI_ROOT=/home/mchow009/.opt/rocm/atmi ..
+CXX=${INSTALL_DIR}/bin/hipcc ${CMAKE} -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR}/atmi  ..
 make -j
 make install
 
