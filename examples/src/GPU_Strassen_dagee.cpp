@@ -11,6 +11,10 @@
 #include <dagee/ATMIalloc.h>
 #include <dagee/ATMIdagExecutor.h>
 
+#if POWER == 1
+#include <rocm_smi/rocm_smi.h>
+#endif
+
 template <typename T, class BufMgr = dagee::AllocManagerAtmi>
 void gpu_strassen_mul_dagee(const T *A, const T *B, T *C, size_t dim, BufMgr &bufMgr)
 {
@@ -199,6 +203,13 @@ void gpu_strassen_mul_dagee(const T *A, const T *B, T *C, size_t dim, BufMgr &bu
 
         dagEx.execute(dag);
 
+    #if POWER == 1
+        uint64_t avgPower = 0;
+        rsmi_dev_power_ave_get(0,0, &avgPower);
+        std::cout << "Avg Power (mW):" << avgPower << std::endl;
+    #endif
+
+
         // Move data to *C
 
         auto *temp = hip_host_malloc<T>(dim * dim);
@@ -253,6 +264,9 @@ int main(int argc, char **argv)
     auto *A = bufMgr.makeSharedCopy(vecA);
     auto *B = bufMgr.makeSharedCopy(vecB);
     auto *C = bufMgr.makeSharedCopy(vecC);
+#if POWER == 1
+    rsmi_init(0);
+#endif
 
 #if TIME == 1
     auto start = std::chrono::high_resolution_clock::now();
